@@ -29,15 +29,16 @@ exports.postTodos = (req, res, next) => {
 
 }
 
-exports.deleteTodos = async (req, res, next) => {
-    Todo.deleteOne({ _id: req.body._id }, err => {
-        if (err) next(err);
-        else return res.status(200).json({ success: "Deleted" })
-    })
+exports.deleteTodos = (req, res, next) => {
+    Todo.deleteOne({ _id: req.body._id })
+        .then(result => {
+            res.status(200).json({ success: "Deleted" })
+        }).catch(err => {
+            next(err);
+        })
 }
 
 exports.updateTodos = (req, res, next) => {
-    console.log(req.body);
 
     Todo.updateOne({ _id: req.body._id },
         {
@@ -45,10 +46,9 @@ exports.updateTodos = (req, res, next) => {
                 title: req.body.title,
                 status: req.body.status
             }
-        }, (err, raw) => {
-            if (!err) {
-                return res.status(200).json({ success: "Updated" })
-            }
+        }).then(result => {
+            return res.status(200).json({ success: "Updated" })
+        }).catch(err => {
             next(err);
         })
 }

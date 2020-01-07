@@ -15,6 +15,7 @@ const flash = require('connect-flash');
 
 const webRoutes = require('./routes/webRoutes');
 const apiRoutes = require('./routes/apiRoutes');
+const logger = require('./util/logger')
 
 
 const app = express();
@@ -74,7 +75,7 @@ app.use((req, res, next) => {
 app.use(webRoutes);
 
 app.use((error, req, res, next) => {
-    console.log(error);
+    logger.error(errors);
     const status = error.statusCode || 500;
     const message = error.message;
     const data = error.data;
@@ -87,6 +88,6 @@ mongoose
         useUnifiedTopology: true
     }).then(() => {
         app.listen(port, () => {
-            console.log("Server running at " + port + " (-_-)!");
+            logger.info(`Server running at ${port} (-_-)!`);
         })
     })

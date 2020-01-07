@@ -18,33 +18,32 @@ exports.postLogin = (req, res, next) => {
         return res.status(301).redirect('/login');
     }
 
-    User.findOne({ email: req.body.email }).then(user => {
-        const msg = "Invalid credentials!";
-        if (user) {
-            if (user.role === 's_admin') {
-                const doMatch = bcrypt.compareSync(req.body.password, user.password);
-                if (doMatch) {
-                    req.session.logged = true;
-                    req.session.user = user
-                    req.session.save(() => {
-                        res.redirect('/');
-                    });
-                    return
-                } else msg = "Invalid credentials!";
-            } else msg = "Not authorized to login here!";
-        }
-
-        if (err) console.log(err);
-        return res.status(400).render('login', {
-            title: "Login Page",
-            error: msg
+    User.findOne({ email: req.body.email })
+        .then(user => {
+            const msg = "Invalid credentials!";
+            if (user) {
+                if (user.role === 's_admin') {
+                    const doMatch = bcrypt.compareSync(req.body.password, user.password);
+                    if (doMatch) {
+                        req.session.logged = true;
+                        req.session.user = user
+                        req.session.save(() => {
+                            res.redirect('/');
+                        });
+                        return
+                    } else msg = "Invalid credentials!";
+                } else msg = "Not authorized to login here!";
+            }
+            return res.status(400).render('login', {
+                title: "Login Page",
+                error: msg
+            });
+        }).catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         });
-    }).catch(err => {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
-        next(err);
-    });
 }
 
 exports.postLogout = (req, res, next) => {

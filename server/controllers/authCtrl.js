@@ -1,11 +1,12 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const mailer = require('nodemailer');
+const mailTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
 
-const mailer = require('nodemailer');
-const mailTransport = require('nodemailer-sendgrid-transport');
+
 const transporter = mailer.createTransport(mailTransport({
     auth: {
         api_key: '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'
@@ -14,14 +15,14 @@ const transporter = mailer.createTransport(mailTransport({
 
 exports.postLogin = (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors);
     if (errors.array().length > 0) {
         return res.status(422).json({ errors: errors.array() });
     }
 
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ email: req.body.email }).then(user => {
+
         if (!user) {
-            const error = new Error('Bad cfffredentialsa!');
+            const error = new Error('Bad credentials!');
             error.statusCode = 401;
             return next(error);
         }
@@ -39,12 +40,17 @@ exports.postLogin = (req, res, next) => {
             { expiresIn: '5d' }
         );
         return res.status(200).json({ token: token, userId: user._id.toString() });
+
+    }).catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     });
 }
 
 exports.postRegister = (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors);
     if (errors.array().length > 0) {
         return res.status(422).json({ errors: errors.array() });
     }
@@ -60,26 +66,22 @@ exports.postRegister = (req, res, next) => {
         email_token
     })
 
-    user.save(err => {
-
-        if (err) {
-            const er = new Error("Error on saving -------------------------------");
-            er.status = 500;
+    user.save()
+        .then(result => {
+            res.status(201).json({ success: "SUCCESS" });
+            return transporter.sendMail({
+                to: user.email,
+                sender: 'tidjani@spartiat.com',
+                subject: 'Activate Account!',
+                html: `<h1><a href="http://localhost:3000/activate/${email_token}"> Click me </a> to activate your account!</h1>  `,
+                text: `Activation code link http://localhost:3000/activate/${email_token} `
+            })
+        }).catch(er => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
             next(err);
-            return;
-        }
-        res.status(201).json({ success: "SUCCESS" });
-
-        return transporter.sendMail({
-            to: user.email,
-            sender: 'tidjani@spartiat.com',
-            subject: 'Activate Account!',
-            html: `<h1><a href="http://localhost:3000/activate/${email_token}"> Click me </a> to activate your account!</h1>  `,
-            text: `Activation code link http://localhost:3000/activate/${email_token}!`
-        }).catch(err => {
-
         });
-    });
 }
 
 exports.activateAccount = async (req, res, next) => {
@@ -91,11 +93,10 @@ exports.activateAccount = async (req, res, next) => {
                 activated: true,
                 email_token: newToken
             }
-        }, (err, raw) => {
-            if (!err) {
-                return res.status(200).json({ success: "Account activation okay" })
-            }
-            return res.status(200).json({ failed: "Account activation failed" })
+        }).then(result => {
+            res.status(200).json({ success: "Account activation okay" })
+        }).catch(err => {
+            res.status(200).json({ failed: "Account activation failed" })
         })
     } else return res.status(204).json({ error: "Account not found" });
 }

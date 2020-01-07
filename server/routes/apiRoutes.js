@@ -1,9 +1,9 @@
 const express = require('express');
-const valid = require('../middlewares/validations')
+const valid = require('../util/middlewares/validations')
 
 const todoCtrl = require('../controllers/todoCtrl');
 const authCtrl = require('../controllers/authCtrl');
-const auth = require('../middlewares/auth').apiAuth
+const auth = require('../util/middlewares/auth').apiAuth
 
 
 const router = express.Router();

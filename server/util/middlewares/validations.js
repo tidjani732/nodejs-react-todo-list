@@ -1,6 +1,6 @@
 const { body, check } = require('express-validator');
 
-const User = require('../models/user');
+const User = require('../../models/user');
 exports.login = [
     body('email', 'Enter a valide email')
         .isEmail()
