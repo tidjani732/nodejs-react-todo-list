@@ -41,12 +41,9 @@ class Register extends Component {
                 errors.password = this.wiggle('password', errs);
                 errors.password_conf = this.wiggle('passwordConfirm', errs);
                 this.setState({ errors });
-            } else if (res.status === 200 && res.status === 201) {
+            } else if (res.status === 200 || res.status === 201) {
                 this.setState({ created: true });
             }
-            // if (res.data && res.data.status) {
-            //     
-            // } else if (res.data && res.data.msg) this.setState({ error: res.data.msg })
         }).catch(er => console.log(er))
     }
     wiggle(key, errors) {
