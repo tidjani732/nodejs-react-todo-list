@@ -18,4 +18,4 @@ I will prefer using Winston.
 - Bunyan out of the box logs JSON lines but Winston can be configured to do that. 
 - Bunyan needs no additional dependency to log daily and rotate log file but Winston does.
 Bunyan is designed for nodejs and Winston is made to run on many platforms. This is the
- main reason that motivates my choice plus the fact that Winston is really easier to configure.
+main reason that motivates my choice plus the fact that Winston is really easier to configure.
