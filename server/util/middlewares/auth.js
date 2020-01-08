@@ -1,4 +1,5 @@
-const jwt = require('jsonwebtoken');
+import { verify } from 'jsonwebtoken';
+
 const webAuth = (req, res, next) => {
     if (!req.session.user) {
         return res.redirect('/login');
@@ -6,7 +7,7 @@ const webAuth = (req, res, next) => {
     next()
 }
 
-const apiAuth = (req, res, next) => {
+const apiAuth = async (req, res, next) => {
     const authHeader = req.header('Authorization');
     if (!authHeader) {
         const error = new Error('Not authenticated.');
@@ -14,19 +15,20 @@ const apiAuth = (req, res, next) => {
         return next(error);
     }
     const token = authHeader.split(' ')[1];
-    customPromise(token, process.env.JWT_SECRET)
-        .then(userId => {
-            req.userId = userId;
-            next();
-        }).catch(err => {
-            err.statusCode = 500;
-            return next(err);
-        })
+    try {
+        const userId = await customPromise(token, process.env.JWT_SECRET)
+        req.userId = userId;
+        next();
+    } catch (err) {
+        err.statusCode = 500;
+        return next(err);
+    }
+
 };
 
 const customPromise = (token, secret) => {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, secret, {}, (err, decodedToken) => {
+        verify(token, secret, {}, (err, decodedToken) => {
             if (err) {
                 reject(err);
                 return;
@@ -40,4 +42,4 @@ const customPromise = (token, secret) => {
 }
 
 
-module.exports = { webAuth, apiAuth };
+export default { webAuth, apiAuth };

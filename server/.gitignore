@@ -9,6 +9,8 @@
 #Log directory
 /logs
 
+#build directory
+/dist
 # misc
 .DS_Store
 .env

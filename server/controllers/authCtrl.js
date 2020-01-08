@@ -1,25 +1,25 @@
-const bcrypt = require('bcryptjs');
-const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const mailer = require('nodemailer');
-const mailTransport = require('nodemailer-sendgrid-transport');
+import { compareSync, hashSync } from 'bcryptjs';
+import { validationResult } from 'express-validator';
+import { sign } from 'jsonwebtoken';
+import { createTransport } from 'nodemailer';
+import mailTransport from 'nodemailer-sendgrid-transport';
 
-const User = require('../models/user');
+import User from '../models/user';
 
 
-const transporter = mailer.createTransport(mailTransport({
+const transporter = createTransport(mailTransport({
     auth: {
         api_key: process.env.SENDGRID_KEY
     }
 }));
 
-exports.postLogin = (req, res, next) => {
+export async function postLogin(req, res, next) {
     const errors = validationResult(req);
     if (errors.array().length > 0) {
         return res.status(422).json({ errors: errors.array() });
     }
-
-    User.findOne({ email: req.body.email }).then(user => {
+    try {
+        const user = await User.findOne({ email: req.body.email })
 
         if (!user) {
             const error = new Error('Bad credentials!');
@@ -29,9 +29,9 @@ exports.postLogin = (req, res, next) => {
         if (!user.activated) {
             return res.status(401).json({ error: "Verify your emails to activate account!" });
         }
-        const doMatch = bcrypt.compareSync(req.body.password, user.password);
+        const doMatch = compareSync(req.body.password, user.password);
         if (!doMatch) return res.status(401).json({ error: "Invalid credentials!" });
-        const token = jwt.sign(
+        const token = sign(
             {
                 email: user.email,
                 userId: user._id.toString()
@@ -41,21 +41,18 @@ exports.postLogin = (req, res, next) => {
         );
         return res.status(200).json({ token: token, userId: user._id.toString() });
 
-    }).catch(err => {
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+    } catch (err) {
         next(err);
-    });
+    }
 }
 
-exports.postRegister = (req, res, next) => {
+export async function postRegister(req, res, next) {
     const errors = validationResult(req);
     if (errors.array().length > 0) {
         return res.status(422).json({ errors: errors.array() });
     }
 
-    const password = bcrypt.hashSync(req.body.password, 12);
+    const password = hashSync(req.body.password, 12);
     const email_token = Math.random().toString();
     const user = new User({
         name: req.body.name,
@@ -66,37 +63,36 @@ exports.postRegister = (req, res, next) => {
         email_token
     })
 
-    user.save()
-        .then(result => {
-            res.status(201).json({ success: "SUCCESS" });
-            return transporter.sendMail({
-                to: user.email,
-                sender: 'tidjani@spartiat.com',
-                subject: 'Activate Account!',
-                html: `<h1><a href="http://localhost:3000/activate/${email_token}"> Click me </a> to activate your account!</h1>  `,
-                text: `Activation code link http://localhost:3000/activate/${email_token} `
-            })
-        }).catch(er => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
-        });
+    try {
+        await user.save()
+
+        res.status(201).json({ success: "SUCCESS" });
+        return transporter.sendMail({
+            to: user.email,
+            sender: 'tidjani@spartiat.com',
+            subject: 'Activate Account!',
+            html: `<h1><a href="http://localhost:3000/activate/${email_token}"> Click me </a> to activate your account!</h1>  `,
+            text: `Activation code link : http://localhost:3000/activate/${email_token} `
+        })
+    } catch (er) {
+        next(err);
+    };
 }
 
-exports.activateAccount = async (req, res, next) => {
-    const user = await User.findOne({ email_token: req.params.token });
-    const newToken = Math.random().toString();
-    if (user) {
-        User.updateOne({ email_token: req.params.token }, {
-            $set: {
-                activated: true,
-                email_token: newToken
-            }
-        }).then(result => {
+export async function activateAccount(req, res, next) {
+    try {
+        const user = await User.findOne({ email_token: req.params.token });
+        const newToken = Math.random().toString();
+        if (user) {
+            await User.updateOne({ email_token: req.params.token }, {
+                $set: {
+                    activated: true,
+                    email_token: newToken
+                }
+            })
             res.status(200).json({ success: "Account activation okay" })
-        }).catch(err => {
-            res.status(200).json({ failed: "Account activation failed" })
-        })
-    } else return res.status(204).json({ error: "Account not found" });
+        } else return res.status(204).json({ error: "Account not found" });
+    } catch (err) {
+        res.status(204).json({ failed: "Account activation failed" })
+    }
 }

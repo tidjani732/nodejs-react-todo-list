@@ -1,6 +1,8 @@
-const path = require('path');
-const { format, createLogger, transports } = require('winston');
-require('winston-daily-rotate-file');
+import { join } from 'path';
+import { format, createLogger, transports } from 'winston';
+import 'winston-daily-rotate-file';
+// import bunyan from 'bunyan';
+// import path from 'path';
 
 const level = process.env.LOG_LEVEL || "info";
 
@@ -21,18 +23,22 @@ const level = process.env.LOG_LEVEL || "info";
 
 const { combine, timestamp, printf } = format;
 
-const myFormat = printf(({ level, message, timestamp }) => {
-    return `${timestamp}  ${level}: ${JSON.stringify(message)}`;
+const customFormat = printf(({ level, message, timestamp, stack }) => {
+    if (stack) {
+        //if (typeof stack !== "string") stack = JSON.stringify(stack);
+        return `${timestamp}  ${level}: ${message} : [Stack : ${stack}]`;
+    }
+    return `${timestamp}  ${level}: ${message}`;
 });
 
-const dir = path.join(__dirname, '..', 'logs')
+const dir = join(__dirname, '..', 'logs')
 
 
 const log = createLogger({
     level,
     format: combine(
         timestamp(),
-        myFormat
+        customFormat
     ),
     transports: [
         new transports.File({
@@ -54,4 +60,4 @@ const log = createLogger({
 });
 
 
-module.exports = log;
+export default log;

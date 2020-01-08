@@ -1,7 +1,7 @@
-const { body, check } = require('express-validator');
+import { body, check } from 'express-validator';
 
-const User = require('../../models/user');
-exports.login = [
+import { findOne } from '../../models/user';
+export const login = [
     body('email', 'Enter a valide email')
         .isEmail()
         .normalizeEmail(),
@@ -9,7 +9,7 @@ exports.login = [
         .notEmpty()
 ];
 
-exports.register = [
+export const register = [
     body('name', 'Name is required!')
         .notEmpty(),
     body('email', 'Email must be valid!')
@@ -22,13 +22,13 @@ exports.register = [
             return val === req.body.password
         }),
     body('email').custom(async (email, { req }) => {
-        return User.findOne({ email }).then(data => {
+        return findOne({ email }).then(data => {
             if (data) return Promise.reject("Email already taken!");
         })
     })
 ]
 
-exports.todo = [
+export const todo = [
     body('title', 'A todo must have title!')
         .notEmpty(),
 ]

@@ -1,17 +1,17 @@
-const express = require('express');
-const adminCtrl = require('../controllers/adminCtrl');
+import { Router } from 'express';
+import { getDashboard, getLogin, postLogin, postLogout } from '../controllers/adminCtrl';
 
-const auth = require('../util/middlewares/auth');
-const validations = require('../util/middlewares/validations');
+import auth from '../util/middlewares/auth';
+import { login } from '../util/middlewares/validations';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/', auth.webAuth, adminCtrl.getDashboard);
+router.get('/', auth.webAuth, getDashboard);
 
-router.get('/login', adminCtrl.getLogin);
+router.get('/login', getLogin);
 
-router.post('/login', validations.login, adminCtrl.postLogin);
+router.post('/login', login, postLogin);
 
-router.post('/logout', adminCtrl.postLogout);
+router.post('/logout', postLogout);
 
-module.exports = router;
+export default router;
