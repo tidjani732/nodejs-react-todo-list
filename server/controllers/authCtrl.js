@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 const transporter = mailer.createTransport(mailTransport({
     auth: {
-        api_key: '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'
+        api_key: process.env.SENDGRID_KEY
     }
 }));
 

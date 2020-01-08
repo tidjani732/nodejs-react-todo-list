@@ -4,7 +4,6 @@ const webAuth = (req, res, next) => {
         return res.redirect('/login');
     }
     next()
-
 }
 
 const apiAuth = (req, res, next) => {
