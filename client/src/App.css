@@ -1,0 +1,83 @@
+#loginbox{
+  max-width: 358px;
+  margin: 4% auto;
+  border: 1px solid #eee;
+  padding: 60px 2% 19px 2%;
+  position: relative;
+  width: 95%;
+  box-shadow: 2px 1px 6px -1px #aaa;
+}
+#loginbox.register {
+  max-width: 600px;
+  margin: 4% auto;
+  padding: 60px 0 0 0;
+}
+.panel-heading {
+  position: absolute;
+  width: 100%;
+  background: #0000001f;
+  top: 0;
+  right: 0;
+  padding: 0 7px;
+}
+.form-group.col-md-6 {
+  display: inline-block;
+  padding: 0;
+}
+.panel-heading a {
+  padding: 7px;
+  display: inline-block;
+  text-decoration: none !important;
+
+}
+.panel-heading a:hover,.panel-heading a.active {
+ border-bottom: 2px solid #007bff
+}
+
+a:not([href]):not([tabindex]) {
+  color: #007bff;
+  cursor: pointer;
+}
+.alert-st {
+  padding: 4px 3% !important;
+  color: #000 !important;
+}
+.todo-list {
+  max-width: 700px;
+  margin: 2px auto;
+  width: 95%;
+}
+.mw-20{
+  max-width: 50px !important
+}.w-5{
+  width: 5px !important
+}
+.todo-list td,  .todo-list th {
+  padding: 5px 15px !important;
+}
+.capitalize{
+  text-transform: capitalize;
+}
+.floating-alert {
+  position: fixed !important;
+  bottom: 25px;
+  background: #ff0000a3;
+  width: 257px !important;
+  padding: 4px;
+  border-radius: 5px;
+  left: 27px;
+  z-index: 9999;
+}
+.floating-alert .card-body {
+  padding: 10px;
+}
+
+span.help.errors {
+  position: absolute;
+  bottom: 0;
+  color: red;
+  font-size: small;
+}
+span.help.errors.sin {
+  bottom: -18px;
+}
