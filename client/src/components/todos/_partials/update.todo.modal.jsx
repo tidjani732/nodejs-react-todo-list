@@ -12,6 +12,7 @@ const TodoUpdateModal = ({ editTodo, ...props }) => {
 
     var checkam = todo.status;
     var titre = todo.title;
+    var assigned = todo.assigned_to ? todo.assigned_to._id : "";
 
     return (
         <div>
@@ -19,7 +20,10 @@ const TodoUpdateModal = ({ editTodo, ...props }) => {
                 <ModalHeader toggle={props.close}>Edit Todo</ModalHeader>
                 <Form onSubmit={e => {
                     e.preventDefault()
-                    editTodo({ title: titre, status: checkam, _id: todo._id })
+                    editTodo({
+                        title: titre, status: checkam,
+                        _id: todo._id, assigned_to: assigned
+                    })
                     props.closeModal()
                 }}>
                     <ModalBody>
@@ -38,7 +42,19 @@ const TodoUpdateModal = ({ editTodo, ...props }) => {
                                 Mark as done
                                 </Label>
                         </FormGroup>
-
+                        <br />
+                        <FormGroup >
+                            <Label> Assign this todo to:  </Label>
+                            <select defaultValue={assigned}
+                                onChange={e => {
+                                    assigned = e.target.value;
+                                }} className="form-control">
+                                <option value="">Nobody</option>
+                                {props.users.map((user, key) => {
+                                    return <option value={user._id} key={key}>{user.name}</option>
+                                })}
+                            </select>
+                        </FormGroup>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" type="submit">Save Changes</Button>{' '}

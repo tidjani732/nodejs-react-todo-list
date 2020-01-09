@@ -18,5 +18,8 @@ export const authService = {
     },
     resetPassword: data => {
         return API.sendPost("/auth/reset/pass", data)
+    },
+    getUsers: data => {
+        return API.sendGet("/users/all")
     }
 }

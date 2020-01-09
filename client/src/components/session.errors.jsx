@@ -15,14 +15,15 @@ class sessioClass extends Component {
     }
     render() {
         return <>
-            {this.props.new_error && this.props.new_error.msg && <Col sm="6" className="floating-alert">
-                <Card>
-                    <CardBody>
-                        <CardText>{this.props.new_error.msg}</CardText>
+            {this.props.new_error && this.props.new_error.msg &&
+                <Col sm="6" className={"floating-alert " + this.props.new_error.type}>
+                    <Card>
+                        <CardBody>
+                            <CardText>{this.props.new_error.msg}</CardText>
 
-                    </CardBody>
-                </Card>
-            </Col>}
+                        </CardBody>
+                    </Card>
+                </Col>}
         </>;
     }
 }

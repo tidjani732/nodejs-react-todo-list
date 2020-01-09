@@ -1,6 +1,6 @@
 import { body, check } from 'express-validator';
 
-import { findOne } from '../../models/user';
+import User from '../../models/user';
 export const login = [
     body('email', 'Enter a valide email')
         .isEmail()
@@ -22,7 +22,7 @@ export const register = [
             return val === req.body.password
         }),
     body('email').custom(async (email, { req }) => {
-        return findOne({ email }).then(data => {
+        return User.findOne({ email }).then(data => {
             if (data) return Promise.reject("Email already taken!");
         })
     })

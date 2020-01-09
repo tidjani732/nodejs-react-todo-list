@@ -96,3 +96,12 @@ export async function activateAccount(req, res, next) {
         res.status(204).json({ failed: "Account activation failed" })
     }
 }
+
+export async function getUsers(req, res, next) {
+    try {
+        const users = await User.find({}).select("name");
+        res.status(200).json({ users });
+    } catch (err) {
+        res.status(204).json({ failed: "Account activation failed" })
+    }
+}

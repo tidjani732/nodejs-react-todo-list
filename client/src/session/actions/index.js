@@ -56,7 +56,7 @@ export function editTodo(todo) {
         return todoService.updateTodo(todo).then(res => {
             if (res.status === 200 && res.data.success) {
                 // console.log(res.data);
-                dispatch({ type: TODO_UPDATED, payload: todo })
+                dispatch({ type: TODO_UPDATED, payload: res.data.todo })
             }
         }).catch(er => dispatch({ type: SESSION_ERROR, payload: { msg: "Unable to update Todo, Verify your internet !" } }))
     };
@@ -70,6 +70,13 @@ export function closeError() {
         return setTimeout(() => {
             dispatch({ type: CLOSE_ERROR, payload: {} })
         }, 4000)
+    }
+};
+
+export function notify(notification, todo) {
+    return function (dispatch) {
+        dispatch({ type: SESSION_ERROR, payload: notification })
+        dispatch({ type: TODO_UPDATED, payload: todo });
     }
 };
 

@@ -1,7 +1,7 @@
 import { compareSync } from 'bcryptjs';
 import { validationResult } from 'express-validator';
 
-import User from '..//models/user';
+import User from '../models/user';
 import Todo from '../models/todo';
 
 export function getLogin(req, res, next) {

@@ -68,6 +68,9 @@ a:not([href]):not([tabindex]) {
   left: 27px;
   z-index: 9999;
 }
+.floating-alert.success {
+  background: green;
+} 
 .floating-alert .card-body {
   padding: 10px;
 }

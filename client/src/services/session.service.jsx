@@ -30,5 +30,9 @@ export const sessionService = {
     getSessionToken: () => {
         var usr = sessionService.getSessionUser();
         return usr.token;
+    },
+    getUid: () => {
+        var usr = sessionService.getSessionUser();
+        return usr.userId;
     }
 }

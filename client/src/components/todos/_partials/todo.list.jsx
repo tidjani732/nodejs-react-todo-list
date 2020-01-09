@@ -15,7 +15,10 @@ const ConnectedList = ({ todos, deleteTodo, ...props }) => <>
             {todos.map((todo, key) => (
                 <tr key={key}>
                     <th scope="row" className="w-5">{key + 1}</th>
-                    <td className={todo.status ? "text-success" : "text-danger"}>{todo.title}</td>
+                    <td>
+                        <span className={todo.status ? "text-success" : "text-danger"}>{todo.title} </span> <br />
+                        {todo.assigned_to && <span>Assigned to: {todo.assigned_to.name}</span>}
+                    </td>
                     <td className="mw-20"> <Badge className={"badge text-white " + (todo.status ? "badge-success" : "badge-danger")}>{!todo.status && "un"}done</Badge></td>
                     <td className="mw-20"><a className="badge badge-primary text-white"
                         onClick={() => props.openEditModal(todo)}>edit</a></td>

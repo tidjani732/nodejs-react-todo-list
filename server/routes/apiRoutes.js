@@ -1,12 +1,12 @@
-const express = require('express');
-const valid = require('../util/middlewares/validations')
+import { Router } from 'express';
+import { login, register, todo } from '../util/middlewares/validations';
 
-const todoCtrl = require('../controllers/todoCtrl');
-const authCtrl = require('../controllers/authCtrl');
+import { getTodos, postTodos, updateTodos, deleteTodos } from '../controllers/todoCtrl';
+import { postLogin, postRegister, activateAccount, getUsers } from '../controllers/authCtrl';
 const auth = require('../util/middlewares/auth').default.apiAuth
 
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -30,7 +30,7 @@ const router = express.Router();
  *       200:
  *         description: login
  */
-router.post('/login', valid.login, authCtrl.postLogin);
+router.post('/login', login, postLogin);
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ router.post('/login', valid.login, authCtrl.postLogin);
  *       201:
  *         description: Registers and sends email to the user
  */
-router.post('/register', valid.register, authCtrl.postRegister);
+router.post('/register', register, postRegister);
 
 /**
  * @swagger
@@ -88,16 +88,18 @@ router.post('/register', valid.register, authCtrl.postRegister);
  *           type: string
  *         description: Token sent by email
  */
-router.get('/activate/:token', authCtrl.activateAccount);
+router.get('/activate/:token', activateAccount);
 
-router.get('/todos', auth, todoCtrl.getTodos);
+router.get('/users/all', auth, getUsers);
 
-router.post('/todos', auth, valid.todo, todoCtrl.postTodos);
+router.get('/todos', auth, getTodos);
 
-router.post('/todos/update', auth, todoCtrl.updateTodos);
+router.post('/todos', auth, todo, postTodos);
 
-router.post('/todos/delete', auth, todoCtrl.deleteTodos);
+router.post('/todos/update', auth, updateTodos);
+
+router.post('/todos/delete', auth, deleteTodos);
 
 //[name, surname, email, sex, password , passwordConfirm];
 
-module.exports = router;
+export default router;

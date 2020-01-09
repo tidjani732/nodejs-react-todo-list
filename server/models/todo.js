@@ -13,6 +13,11 @@ const todoSchema = new Schema({
         ref: 'User',
         required: true
     },
+    assigned_to: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: false
+    },
 });
 
 export default model('Todo', todoSchema);

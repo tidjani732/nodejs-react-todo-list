@@ -1,10 +1,10 @@
 require('dotenv').config();
 import express from 'express';
+import http from "http";
 import { connect } from 'mongoose';
 import cors from 'cors';
 import { json, urlencoded } from 'body-parser';
 import { join } from 'path';
-
 import session from 'express-session';
 const MongoDBStore = require('connect-mongodb-session')(session);
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -16,11 +16,24 @@ import flash from 'connect-flash';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
 import logger from './util/logger';
+import { getNum, socketInit } from "./util/socket";
 
 
 const app = express();
 const port = process.env.S_PORT;
 const MONGO_URL = process.env.MONGO_URL;
+
+const server = http.createServer(app);
+const io = socketInit(server);
+
+io.on('connection', (socks) => {
+    logger.info('New connection');
+
+
+    socks.on('disconnect', () => {
+        logger.info('We just loosed a User..');
+    });
+});
 
 const options = {
     swaggerDefinition: {
@@ -84,9 +97,10 @@ app.use((error, req, res, next) => {
 
 connect(MONGO_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 }).then(() => {
-    app.listen(port, () => {
-        logger.info(`Server running at ${port} (-_-)!`);
+    server.listen(port, () => {
+        logger.info(`Server running at ${port} (-_-)! ${getNum()}`);
     })
 })

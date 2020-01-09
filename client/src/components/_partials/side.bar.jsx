@@ -43,23 +43,26 @@ export const HeaderTag = (props) => {
                         </>}
                         {sesUser.api_token && <>
 
-                            <li className="nav-item"><Link to={ROUTE_HOME} className="nav-link">Dashboard</Link></li>
+                            <li className="nav-item">
+                                <Link to={ROUTE_HOME} className="nav-link">
+                                    Dashboard</Link>
+                            </li>
 
 
 
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     My Account
-                            </DropdownToggle>
+                                </DropdownToggle>
                                 <DropdownMenu right>
                                     <DropdownItem>
                                         Profil
-                                </DropdownItem>
+                                    </DropdownItem>
                                     <DropdownItem onClick={
                                         sessionService.logOut
                                     }>
                                         Log Out
-                                </DropdownItem>
+                                    </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown></>}
                     </Nav>
