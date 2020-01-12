@@ -5,6 +5,11 @@ import { getTodos, postTodos, updateTodos, deleteTodos } from '../controllers/to
 import { postLogin, postRegister, activateAccount, getUsers } from '../controllers/authCtrl';
 const auth = require('../util/middlewares/auth').default.apiAuth
 
+import uploader from '../util/fileUploader';
+import { updateUser, getOne } from '../controllers/userCtrl';
+
+
+
 
 const router = Router();
 
@@ -92,11 +97,16 @@ router.get('/activate/:token', activateAccount);
 
 router.get('/users/all', auth, getUsers);
 
+router.get('/user/me', auth, getOne);
+
+router.post('/user/update', auth, uploader.single('image'), updateUser)
+
 router.get('/todos', auth, getTodos);
 
 router.post('/todos', auth, todo, postTodos);
 
-router.post('/todos/update', auth, updateTodos);
+router.post('/todos/update', auth, uploader.single('image'),
+    updateTodos);
 
 router.post('/todos/delete', auth, deleteTodos);
 

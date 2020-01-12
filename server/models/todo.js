@@ -13,6 +13,7 @@ const todoSchema = new Schema({
         ref: 'User',
         required: true
     },
+    images: [{ type: String }],
     assigned_to: {
         type: Schema.Types.ObjectId,
         ref: 'User',

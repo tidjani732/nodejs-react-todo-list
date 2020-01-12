@@ -6,8 +6,7 @@ import {
     UncontrolledDropdown, DropdownToggle,
     DropdownMenu, DropdownItem
 } from 'reactstrap';
-import { Link } from "react-router-dom";
-import { ROUTE_REGISTER, ROUTE_LOGIN, ROUTE_HOME, ROUTE_WELCOME } from "../../helpers/constants";
+import { ROUTE_REGISTER, ROUTE_LOGIN, ROUTE_HOME, ROUTE_WELCOME, ROUTE_PROFILE } from "../../helpers/constants";
 import { util } from "../../helpers/helper";
 import { sessionService } from "../../services/session.service";
 
@@ -16,7 +15,7 @@ import { sessionService } from "../../services/session.service";
 class Header extends React.PureComponent {
     state = {}
     componentDidMount() {
-        this.props.getSessionData();
+        //this.props.getSessionData();
     }
 
     render() {
@@ -35,16 +34,16 @@ export const HeaderTag = (props) => {
     return (
         <div>
             <Navbar color="primary" dark expand="md">
-                <Link className="navbar-brand" to={ROUTE_HOME}>TODO_LIST</Link>
+                <a className="navbar-brand" href={ROUTE_HOME}>TODO_LIST</a>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="ml-auto" navbar>
-                        {!sesUser.userId && <>
-                            <li className="nav-item"><Link to={ROUTE_LOGIN} className="nav-link">Login</Link></li>
-                            <li className="nav-item"><Link to={ROUTE_REGISTER} className="nav-link">Sign Up</Link></li>
+                        {sesUser && !sesUser.userId && <>
+                            <li className="nav-item"><a href={ROUTE_LOGIN} className="nav-link">Login</a></li>
+                            <li className="nav-item"><a href={ROUTE_REGISTER} className="nav-link">Sign Up</a></li>
                         </>}
-                        {sesUser.userId && <>
-                            <li className="nav-item"><Link to={ROUTE_HOME} className="nav-link">Dashboard</Link></li>
+                        {sesUser && sesUser.userId && <>
+                            <li className="nav-item"><a href={ROUTE_HOME} className="nav-link">Dashboard</a></li>
 
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
@@ -52,8 +51,8 @@ export const HeaderTag = (props) => {
                             </DropdownToggle>
                                 <DropdownMenu right>
                                     <DropdownItem>
-                                        Profil
-                                </DropdownItem>
+                                        <a href={ROUTE_PROFILE}>Profile</a>
+                                    </DropdownItem>
                                     <DropdownItem onClick={
                                         sessionService.logOut
                                     }>
@@ -68,4 +67,4 @@ export const HeaderTag = (props) => {
     );
 }
 
-export default connect(util.mapStateToProps("sesUser"), { getSessionData })(Header);
+export default connect(util.mapStateToProps("sesUser"), {})(Header);

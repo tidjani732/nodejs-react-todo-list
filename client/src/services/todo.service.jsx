@@ -12,5 +12,8 @@ export const todoService = {
     },
     updateTodo: todo => {
         return API.sendPost("/todos/update", todo)
+    },
+    addImage: formData => {
+        return API.postWithFiles("/todos/update", formData)
     }
 }

@@ -12,23 +12,20 @@ import AccountActivation from './components/auth/account.activate';
 import Home from './components/home';
 import AccountRecovery from './components/auth/account.recovery';
 import AccountReset from './components/auth/account.reset';
+import profile from './components/profile';
 
 const isLogged = sessionService.isLogged();
 
 class App extends React.Component {
 
-  componentDidCatch(error, errorInf) {
-    console.log("And error", error);
-
-  }
 
   render() {
     return (
       <React.Fragment>
-
+        <Header />
         <BrowserRouter>
           <>
-            <Header />
+
             <Switch>
               <Route path="/" component={welcome} exact />
               <AuthRoute path="/login" component={Login} exact />
@@ -37,6 +34,7 @@ class App extends React.Component {
               <AuthRoute path="/recovery" component={AccountRecovery} exact />
               <AuthRoute path="/reset/:token?" component={AccountReset} exact />
               <PrivateRoute path="/home" component={Home} exact />
+              <PrivateRoute path="/profil" component={profile} exact />
               <Route component={Err404} />
             </Switch>
 

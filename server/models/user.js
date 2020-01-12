@@ -26,7 +26,11 @@ const userSchema = new Schema({
     },
     activated: {
         type: Boolean,
-        default: false
+        default: true
+    },
+    photo_url: {
+        type: String,
+        required: false
     },
     role: {
         type: String,

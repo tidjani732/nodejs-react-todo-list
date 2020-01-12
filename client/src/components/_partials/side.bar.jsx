@@ -45,7 +45,7 @@ export const HeaderTag = (props) => {
 
                             <li className="nav-item">
                                 <Link to={ROUTE_HOME} className="nav-link">
-                                    Dashboard</Link>
+                                    Dashboarda</Link>
                             </li>
 
 
@@ -55,8 +55,8 @@ export const HeaderTag = (props) => {
                                     My Account
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem>
-                                        Profil
+                                    <DropdownItem >
+                                        <Link to={ROUTE_PROFILE}>Profile</Link>
                                     </DropdownItem>
                                     <DropdownItem onClick={
                                         sessionService.logOut
@@ -72,4 +72,4 @@ export const HeaderTag = (props) => {
     );
 }
 
-export default connect(util.mapStateToProps("sesUser"), null)(SideBar);
+//export default connect(util.mapStateToProps("sesUser"), null)(SideBar);

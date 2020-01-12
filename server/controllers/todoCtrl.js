@@ -49,12 +49,20 @@ export async function deleteTodos(req, res, next) {
 
 export async function updateTodos(req, res, next) {
     try {
-        await Todo.updateOne({ _id: req.body._id }, {
-            $set: {
-                title: req.body.title,
-                status: req.body.status,
-                assigned_to: req.body.assigned_to
+
+        var seter = {}
+        if (req.body.title) seter.title = req.body.title;
+        if (req.body.status) seter.status = req.body.status;
+        if (req.body.assigned_to) seter.assigned_to = req.body.assigned_to;
+        if (req.file) {
+            const tod = await Todo.findOne({ _id: req.body._id });
+            if (tod) {
+                const images = tod.images || [];
+                seter.images = [...images, req.file.path]
             }
+        }
+        await Todo.updateOne({ _id: req.body._id }, {
+            $set: seter
         });
         const todo = await Todo.findOne({ _id: req.body._id }).populate('assigned_to', 'name');
         if (todo && todo.assigned_to && todo.assigned_to._id) {

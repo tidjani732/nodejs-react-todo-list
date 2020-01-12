@@ -8,6 +8,7 @@
 
 #Log directory
 /logs
+/images
 
 #build directory
 /dist

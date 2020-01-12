@@ -16,24 +16,12 @@ import flash from 'connect-flash';
 import webRoutes from './routes/webRoutes';
 import apiRoutes from './routes/apiRoutes';
 import logger from './util/logger';
-import { getNum, socketInit } from "./util/socket";
+import { socketInit } from "./util/socket";
 
 
 const app = express();
 const port = process.env.S_PORT;
 const MONGO_URL = process.env.MONGO_URL;
-
-const server = http.createServer(app);
-const io = socketInit(server);
-
-io.on('connection', (socks) => {
-    logger.info('New connection');
-
-
-    socks.on('disconnect', () => {
-        logger.info('We just loosed a User..');
-    });
-});
 
 const options = {
     swaggerDefinition: {
@@ -59,6 +47,7 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, 'public')));
+app.use('/images', express.static(join(__dirname, 'images')));
 
 app.use('/api', apiRoutes);
 
@@ -95,12 +84,24 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message, data: data });
 });
 
+const server = http.createServer(app);
+const io = socketInit(server);
+
+io.on('connection', (socks) => {
+    logger.info('New connection');
+
+
+    socks.on('disconnect', () => {
+        logger.info('We just loosed a User..');
+    });
+});
+
 connect(MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false
 }).then(() => {
     server.listen(port, () => {
-        logger.info(`Server running at ${port} (-_-)! ${getNum()}`);
+        logger.info(`Server running at ${port} (-_-)!`);
     })
 })

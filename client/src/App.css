@@ -84,3 +84,8 @@ span.help.errors {
 span.help.errors.sin {
   bottom: -18px;
 }
+.todo-imgs {
+  height: 100px;
+  display: inline-block;
+  margin: 2px;
+}

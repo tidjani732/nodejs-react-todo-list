@@ -1,6 +1,7 @@
 import {
     TODO_ADDED, TODO_LOADED, TODO_UPDATED,
-    TODO_DELETED, SESSION_ERROR, CLOSE_ERROR, CLOSE_MODAL, TODO_OPEN_EDIT, SESSION_LOADED
+    TODO_DELETED, SESSION_ERROR, CLOSE_ERROR, CLOSE_MODAL,
+    TODO_OPEN_EDIT, SESSION_LOADED, PROFILE_LOADED
 } from "../../helpers/constants";
 import { sessionService } from "../../services/session.service";
 
@@ -8,17 +9,20 @@ import { sessionService } from "../../services/session.service";
 
 const initialState = {
     todos: [],
-    sesUser: {},
+    sesUser: sessionService.getSessionUser(),
+    sesProfil: {},
     new_error: {},
     todo: {}, //currently edited todo
     modalOpen: "",
     userId: sessionService.getUid()
 };
+
 function rootReducer(state = initialState, action) {
     const { payload } = action;
-    if (action.type === SESSION_LOADED) {
+
+    if (action.type === PROFILE_LOADED) {
         return Object.assign({}, state, {
-            sesUser: state.sesUser = payload
+            sesUser: state.sesProfil = payload
         });
     }
     if (action.type === TODO_ADDED) {

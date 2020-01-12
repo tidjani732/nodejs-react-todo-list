@@ -8,7 +8,8 @@ const webAuth = (req, res, next) => {
 }
 
 const apiAuth = async (req, res, next) => {
-    const authHeader = req.header('Authorization');
+    var authHeader = req.header('Authorization');
+    //if (!authHeader) authHeader = req.query.params.token;
     if (!authHeader) {
         const error = new Error('Not authenticated.');
         error.statusCode = 401;

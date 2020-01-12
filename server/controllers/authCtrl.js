@@ -1,15 +1,16 @@
 import { compareSync, hashSync } from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import { sign } from 'jsonwebtoken';
-import { createTransport } from 'nodemailer';
+import mailer from 'nodemailer';
 import mailTransport from 'nodemailer-sendgrid-transport';
 
 import User from '../models/user';
+import logger from "../util/logger";
 
 
-const transporter = createTransport(mailTransport({
+const transporter = mailer.createTransport(mailTransport({
     auth: {
-        api_key: process.env.SENDGRID_KEY
+        api_key: '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'
     }
 }));
 
@@ -69,10 +70,13 @@ export async function postRegister(req, res, next) {
         res.status(201).json({ success: "SUCCESS" });
         return transporter.sendMail({
             to: user.email,
-            sender: 'tidjani@spartiat.com',
-            subject: 'Activate Account!',
+            sender: 'valaniel@gems.com',
+            subject: 'Activate Accoun!',
             html: `<h1><a href="http://localhost:3000/activate/${email_token}"> Click me </a> to activate your account!</h1>  `,
             text: `Activation code link : http://localhost:3000/activate/${email_token} `
+        }, (err, info) => {
+            if (err) logger.error(err);
+            else logger.info(info)
         })
     } catch (er) {
         next(err);

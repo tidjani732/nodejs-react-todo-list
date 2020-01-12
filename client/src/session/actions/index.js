@@ -1,10 +1,23 @@
 import { todoService } from "../../services/todo.service";
-import { TODO_LOADED, SESSION_LOADED, SESSION_ERROR, TODO_ADDED, CLOSE_ERROR, TODO_DELETED, TODO_UPDATED, CLOSE_MODAL, TODO_OPEN_EDIT } from "../../helpers/constants";
-import { sessionService } from "../../services/session.service";
+import {
+    TODO_LOADED, SESSION_ERROR, TODO_ADDED, CLOSE_ERROR,
+    TODO_DELETED, TODO_UPDATED, CLOSE_MODAL, TODO_OPEN_EDIT, PROFILE_LOADED
+} from "../../helpers/constants";
+import { usrServ } from "../../services/user.service";
 
-export function getSessionData() {
-    var sesUser = sessionService.getSessionUser();
-    return { type: SESSION_LOADED, payload: sesUser }
+
+export function getSesUser() {
+    return async function (dispatch) {
+        try {
+            const res = await usrServ.getSesUser();
+            if (res.status === 200) {
+                return dispatch({ type: PROFILE_LOADED, payload: res.data.user });
+            }
+        } catch (err) {
+            dispatch({ type: SESSION_ERROR, payload: { msg: "Unable to load session." } });
+        }
+    }
+
 }
 export function addTodo(data) {
     return async function (dispatch) {
